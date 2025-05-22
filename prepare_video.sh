@@ -42,4 +42,4 @@ cd $ROOT_PATH/utils
 python generate_motion_mask.py --dataset_path $DATASET_PATH
 
 cd $ROOT_PATH/
-python run_nerf.py --config configs/config.txt
+python run_nerf.py --config configs/config-WTB-Beijing.txt
