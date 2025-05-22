@@ -4,7 +4,7 @@ DATASET_PATH=$ROOT_PATH/data/$DATASET_NAME
 
 mkdir -p $ROOT_PATH/weights
 cd $ROOT_PATH/weights
-wget https://github.com/isl-org/MiDaS/releases/download/v2_1/model-f6b98070.pt
+# wget https://github.com/isl-org/MiDaS/releases/download/v2_1/model-f6b98070.pt
 
 
 cd $ROOT_PATH/utils

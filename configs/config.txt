@@ -4,7 +4,7 @@ datadir = ./data/DJI_20250516151729_0005_V
 
 dataset_type = llff
 
-factor = 4
+factor = 1
 N_rand = 1024
 N_samples = 64
 netwidth = 256
