@@ -1,4 +1,4 @@
-conda creeate -n DynamicNeRF python=3.12 numpy=1.26.4
+conda create -n DynamicNeRF python=3.12 numpy=1.26.4 -y
 conda activate DynamicNeRF
 
 pip3 install torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
