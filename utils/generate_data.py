@@ -6,6 +6,7 @@ import torch
 import torchvision
 import skimage.morphology
 import argparse
+import cv2
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -17,44 +18,58 @@ def create_dir(dir):
 
 def multi_view_multi_time(args):
     """
-    Generating multi view multi time data
+    Generating multi view multi time data using cv2 for image I/O
     """
 
-    Maskrcnn = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True).cuda().eval()
+    Maskrcnn = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True).to(device).eval()
     threshold = 0.5
 
     videoname, ext = os.path.splitext(os.path.basename(args.videopath))
 
-    imgs = []
-    reader = imageio.get_reader(args.videopath)
-    for i, im in enumerate(reader):
-        imgs.append(im)
-
-    imgs = np.array(imgs)
-    num_frames, H, W, _ = imgs.shape
-    imgs = imgs[::int(np.ceil(num_frames / 100))]
+    cap = cv2.VideoCapture(args.videopath)
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    step = max(1, int(np.ceil(frame_count / 385)))
 
     create_dir(os.path.join(args.data_dir, videoname, 'images'))
     create_dir(os.path.join(args.data_dir, videoname, 'images_colmap'))
     create_dir(os.path.join(args.data_dir, videoname, 'background_mask'))
 
-    for idx, img in enumerate(imgs):
-        print(idx)
-        imageio.imwrite(os.path.join(args.data_dir, videoname, 'images', str(idx).zfill(3) + '.png'), img)
-        imageio.imwrite(os.path.join(args.data_dir, videoname, 'images_colmap', str(idx).zfill(3) + '.jpg'), img)
+    idx = 0
+    frame_idx = 0
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        if frame_idx % step == 0:
+            img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            H, W, _ = img.shape
+            max_size = int(1920 / 2)
+            scale = min(max_size / max(H, W), 1.0)
+            if scale < 1.0:
+                img = cv2.resize(img, (int(W * scale), int(H * scale)), interpolation=cv2.INTER_AREA)
+                H, W, _ = img.shape
 
-        # Get coarse background mask
-        img = torchvision.transforms.functional.to_tensor(img).to(device)
-        background_mask = torch.FloatTensor(H, W).fill_(1.0).to(device)
-        objPredictions = Maskrcnn([img])[0]
+            print(idx)
+            # Save images using cv2 (convert RGB to BGR)
+            cv2.imwrite(os.path.join(args.data_dir, videoname, 'images', str(idx).zfill(3) + '.png'), cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+            cv2.imwrite(os.path.join(args.data_dir, videoname, 'images_colmap', str(idx).zfill(3) + '.jpg'), cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
 
-        for intMask in range(len(objPredictions['masks'])):
-            if objPredictions['scores'][intMask].item() > threshold:
-                if objPredictions['labels'][intMask].item() == 1: # person
-                    background_mask[objPredictions['masks'][intMask, 0, :, :] > threshold] = 0.0
+            # Get coarse background mask
+            img_tensor = torchvision.transforms.functional.to_tensor(img).to(device)
+            background_mask = torch.ones(H, W, dtype=torch.float32, device=device)
+            objPredictions = Maskrcnn([img_tensor])[0]
 
-        background_mask_np = ((background_mask.cpu().numpy() > 0.1) * 255).astype(np.uint8)
-        imageio.imwrite(os.path.join(args.data_dir, videoname, 'background_mask', str(idx).zfill(3) + '.jpg.png'), background_mask_np)
+            for intMask in range(len(objPredictions['masks'])):
+                if objPredictions['scores'][intMask].item() > threshold:
+                    if objPredictions['labels'][intMask].item() == 1:  # person
+                        background_mask[objPredictions['masks'][intMask, 0, :, :] > threshold] = 0.0
+
+            background_mask_np = ((background_mask.cpu().numpy() > 0.1) * 255).astype(np.uint8)
+            cv2.imwrite(os.path.join(args.data_dir, videoname, 'background_mask', str(idx).zfill(3) + '.jpg.png'), background_mask_np)
+            idx += 1
+        frame_idx += 1
+
+    cap.release()
 
 
 if __name__ == '__main__':

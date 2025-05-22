@@ -1,6 +1,6 @@
 expname = xxxxxx_DyNeRF_pretrain_test
 basedir = ./logs
-datadir = ./data/xxxxxx/
+datadir = ./data/DJI_20250516151729_0005_V
 
 dataset_type = llff
 

@@ -65,7 +65,7 @@ def run_maskrcnn(model, img_path, intWidth=1024, intHeight=576):
     threshold = 0.5
 
     o_image = PIL.Image.open(img_path)
-    image = o_image.resize((intWidth, intHeight), PIL.Image.ANTIALIAS)
+    image = o_image.resize((intWidth, intHeight), PIL.Image.LANCZOS)
 
     image_tensor = torchvision.transforms.functional.to_tensor(image).cuda()
 

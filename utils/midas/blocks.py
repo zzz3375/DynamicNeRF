@@ -1,48 +1,18 @@
 import torch
 import torch.nn as nn
 
-from .vit import (
-    _make_pretrained_vitb_rn50_384,
-    _make_pretrained_vitl16_384,
-    _make_pretrained_vitb16_384,
-    forward_vit,
-)
 
-def _make_encoder(backbone, features, use_pretrained, groups=1, expand=False, exportable=True, hooks=None, use_vit_only=False, use_readout="ignore",):
-    if backbone == "vitl16_384":
-        pretrained = _make_pretrained_vitl16_384(
-            use_pretrained, hooks=hooks, use_readout=use_readout
-        )
-        scratch = _make_scratch(
-            [256, 512, 1024, 1024], features, groups=groups, expand=expand
-        )  # ViT-L/16 - 85.0% Top1 (backbone)
-    elif backbone == "vitb_rn50_384":
-        pretrained = _make_pretrained_vitb_rn50_384(
-            use_pretrained,
-            hooks=hooks,
-            use_vit_only=use_vit_only,
-            use_readout=use_readout,
-        )
-        scratch = _make_scratch(
-            [256, 512, 768, 768], features, groups=groups, expand=expand
-        )  # ViT-H/16 - 85.0% Top1 (backbone)
-    elif backbone == "vitb16_384":
-        pretrained = _make_pretrained_vitb16_384(
-            use_pretrained, hooks=hooks, use_readout=use_readout
-        )
-        scratch = _make_scratch(
-            [96, 192, 384, 768], features, groups=groups, expand=expand
-        )  # ViT-B/16 - 84.6% Top1 (backbone)
-    elif backbone == "resnext101_wsl":
+def _make_encoder(backbone, features, use_pretrained, groups=1, expand=False, exportable=True):
+    if backbone == "resnext101_wsl":
         pretrained = _make_pretrained_resnext101_wsl(use_pretrained)
-        scratch = _make_scratch([256, 512, 1024, 2048], features, groups=groups, expand=expand)     # efficientnet_lite3
+        scratch = _make_scratch([256, 512, 1024, 2048], features, groups=groups, expand=expand)     # efficientnet_lite3  
     elif backbone == "efficientnet_lite3":
         pretrained = _make_pretrained_efficientnet_lite3(use_pretrained, exportable=exportable)
-        scratch = _make_scratch([32, 48, 136, 384], features, groups=groups, expand=expand)  # efficientnet_lite3
+        scratch = _make_scratch([32, 48, 136, 384], features, groups=groups, expand=expand)  # efficientnet_lite3     
     else:
         print(f"Backbone '{backbone}' not implemented")
         assert False
-
+        
     return pretrained, scratch
 
 
@@ -96,7 +66,7 @@ def _make_efficientnet_backbone(effnet):
     pretrained.layer4 = nn.Sequential(*effnet.blocks[5:9])
 
     return pretrained
-
+    
 
 def _make_resnet_backbone(resnet):
     pretrained = nn.Module()
@@ -121,7 +91,7 @@ class Interpolate(nn.Module):
     """Interpolation module.
     """
 
-    def __init__(self, scale_factor, mode, align_corners=False):
+    def __init__(self, scale_factor, mode):
         """Init.
 
         Args:
@@ -133,7 +103,6 @@ class Interpolate(nn.Module):
         self.interp = nn.functional.interpolate
         self.scale_factor = scale_factor
         self.mode = mode
-        self.align_corners = align_corners
 
     def forward(self, x):
         """Forward pass.
@@ -146,7 +115,7 @@ class Interpolate(nn.Module):
         """
 
         x = self.interp(
-            x, scale_factor=self.scale_factor, mode=self.mode, align_corners=self.align_corners
+            x, scale_factor=self.scale_factor, mode=self.mode, align_corners=False
         )
 
         return x
@@ -247,7 +216,7 @@ class ResidualConvUnit_custom(nn.Module):
         self.conv1 = nn.Conv2d(
             features, features, kernel_size=3, stride=1, padding=1, bias=True, groups=self.groups
         )
-
+        
         self.conv2 = nn.Conv2d(
             features, features, kernel_size=3, stride=1, padding=1, bias=True, groups=self.groups
         )
@@ -269,12 +238,12 @@ class ResidualConvUnit_custom(nn.Module):
         Returns:
             tensor: output
         """
-
+        
         out = self.activation(x)
         out = self.conv1(out)
         if self.bn==True:
             out = self.bn1(out)
-
+       
         out = self.activation(out)
         out = self.conv2(out)
         if self.bn==True:
@@ -309,12 +278,12 @@ class FeatureFusionBlock_custom(nn.Module):
         out_features = features
         if self.expand==True:
             out_features = features//2
-
+        
         self.out_conv = nn.Conv2d(features, out_features, kernel_size=1, stride=1, padding=0, bias=True, groups=1)
 
         self.resConfUnit1 = ResidualConvUnit_custom(features, activation, bn)
         self.resConfUnit2 = ResidualConvUnit_custom(features, activation, bn)
-
+        
         self.skip_add = nn.quantized.FloatFunctional()
 
     def forward(self, *xs):
@@ -339,3 +308,4 @@ class FeatureFusionBlock_custom(nn.Module):
         output = self.out_conv(output)
 
         return output
+

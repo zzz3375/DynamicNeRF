@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: generate_data.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/utils/generate_data.py",
+            "args": [
+                "--videopath",
+                "DJI_20250516151729_0005_V.MP4"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}
