@@ -16,6 +16,21 @@
             },
             "console": "integratedTerminal",
             "justMyCode": false
-        }
+        },
+        {
+            "name": "Python: NeRF Training",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_nerf.py",
+            "args": [
+                "--config",
+                "configs/config-WTB-Beijing.txt"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }}
     ]
 }
