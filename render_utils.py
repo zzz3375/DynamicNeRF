@@ -551,6 +551,11 @@ def render_rays(t,
     pts = rays_o[..., None, :] + rays_d[..., None, :] * \
         z_vals[..., :, None] # [N_rays, N_samples, 3]
 
+    #TODO: This is a hack to ensure pts inside the bound, otherwise will produce NaN
+    pts_mu=torch.zeros(3)
+    pts_std=torch.ones(3)
+    pts = (pts - pts_mu.reshape(1,1,3).to(device)) / pts_std.reshape(1,1,3).to(device)
+
     # Add the time dimension to xyz.
     pts_ref = torch.cat([pts, torch.ones_like(pts[..., 0:1]) * t], -1)
 
