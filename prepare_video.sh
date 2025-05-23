@@ -1,6 +1,7 @@
 ROOT_PATH=~/DynamicNeRF
-DATASET_NAME=DJI_20250516151729_0005_V
+DATASET_NAME=DJI_20250516151729_0005_V-100f-fps30
 DATASET_PATH=$ROOT_PATH/data/$DATASET_NAME
+mkdir -p $DATASET_PATH
 
 mkdir -p $ROOT_PATH/weights
 cd $ROOT_PATH/weights
@@ -8,22 +9,22 @@ cd $ROOT_PATH/weights
 
 
 cd $ROOT_PATH/utils
-python generate_data.py --videopath ../DJI_20250516151729_0005_V.MP4
+python generate_data.py --videopath ../DJI_20250516151729_0005_V.MP4 --outputname $DATASET_NAME 
 
 colmap feature_extractor \
 --database_path $DATASET_PATH/database.db \
 --image_path $DATASET_PATH/images_colmap \
---ImageReader.mask_path $DATASET_PATH/background_mask \
---ImageReader.single_camera 1
+--ImageReader.mask_path $DATASET_PATH/background_mask 
+# --ImageReader.single_camera 1
 
-colmap sequential_matcher \
+colmap exhaustive_matcher \
 --database_path $DATASET_PATH/database.db
 
-mkdir $DATASET_PATH/sparse
+mkdir -p $DATASET_PATH/sparse
 colmap mapper \
     --database_path $DATASET_PATH/database.db \
     --image_path $DATASET_PATH/images_colmap \
-    --output_path $DATASET_PATH/sparse \
+    --output_path $DATASET_PATH/sparse 
     # --Mapper.num_threads 16 \
     # --Mapper.init_min_tri_angle 4 \
     # --Mapper.multiple_models 0 \
