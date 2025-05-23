@@ -610,7 +610,7 @@ def train():
 
             print('Saved weights at', path)
 
-        if i % args.i_video == 0 and i > 0:
+        if i % args.i_video == 0 and i < 0:
 
             # Change time and change view at the same time.
             time2render = np.concatenate((np.repeat((i_train / float(num_img) * 2. - 1.0), 4),
@@ -635,8 +635,8 @@ def train():
                 testsavedir, '{}_{}_{:06d}_'.format(expname, result_type, i))
             save_res(moviebase, ret)
 
-        if i % args.i_testset == 0 and i > 0:
-
+        # if i % args.i_testset == 0 and i > 0:
+        if i % args.i_testset == 0 and i < 0:
             # Change view and time.
             pose2render = torch.Tensor(poses)
             time2render = i_train / float(num_img) * 2. - 1.0
