@@ -41,7 +41,7 @@ def entropy(x):
     return -torch.sum(x * torch.log(x + 1e-19)) / x.shape[0]
 
 
-def mse2psnr(x): return -10. * torch.log(x) / torch.log(torch.Tensor([10.]))
+def mse2psnr(x): return -10. * torch.log(x + 1e-19) / torch.log(torch.Tensor([10.]))
 
 
 def to8b(x): return (255 * np.clip(x, 0, 1)).astype(np.uint8)

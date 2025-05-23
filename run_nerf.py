@@ -732,7 +732,7 @@ def train():
                 writer.add_scalar("psnr_holdout", psnr.item(), i)
                 writer.add_image("rgb_holdout", target, global_step=i, dataformats='HWC')
                 writer.add_image("mask", mask, global_step=i, dataformats='HW')
-                writer.add_image("disp", torch.clamp(invdepth / percentile(invdepth, 97), 0., 1.), global_step=i, dataformats='HW')
+                writer.add_image("disp", torch.clamp(invdepth / percentile(invdepth+1e-19, 97), 0., 1.), global_step=i, dataformats='HW')
 
                 writer.add_image("rgb", torch.clamp(ret['rgb_map_full'], 0., 1.), global_step=i, dataformats='HWC')
                 writer.add_image("depth", normalize_depth(ret['depth_map_full']), global_step=i, dataformats='HW')
