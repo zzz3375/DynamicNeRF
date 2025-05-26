@@ -24,7 +24,7 @@
             "program": "${workspaceFolder}/run_nerf.py",
             "args": [
                 "--config",
-                "configs/config-WTB-Beijing.txt"
+                "configs/config-WTB-Beijing-100f-fps30.txt"
             ],
             "console": "integratedTerminal",
             "justMyCode": false,
