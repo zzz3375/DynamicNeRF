@@ -107,7 +107,7 @@ def visualize_image_grid(log_path, tags_to_visualize, steps_to_visualize, save_p
     
     # 保存图像（替换 os.makedirs 为 Path.mkdir）
     Path(save_path).parent.mkdir(parents=True, exist_ok=True)  # 使用 pathlib 处理路径
-    plt.savefig(save_path, dpi=450, bbox_inches='tight')
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
     print(f"Grid visualization saved to {save_path}")
     
     # plt.show()
@@ -121,12 +121,12 @@ if __name__ == "__main__":
     # TAGS_TO_DISPLAY = ['Ground Truth', 'Render (NeRF)', 'Render (NeRF + D)']  # 标签显示名称
 
     # depth
-    TAGS_TO_VISUALIZE = ['rgb_holdout', 'depth_s', 'depth_d']
-    TAGS_TO_DISPLAY = ['Ground Truth', 'Depth (NeRF)', 'Depth (NeRF + D)']  # 标签显示名称
+    # TAGS_TO_VISUALIZE = ['rgb_holdout', 'depth_s', 'depth_d']
+    # TAGS_TO_DISPLAY = ['Ground Truth', 'Depth (NeRF)', 'Depth (NeRF + D)']  # 标签显示名称
 
     # flow
-    # TAGS_TO_VISUALIZE = ['flow_f_gt', 'induced_flow_f', 'flow_b_gt', 'induced_flow_b']  # 需要可视化的图像标签
-    # TAGS_TO_DISPLAY = ['Estimated displacements\n(forward)', 'RAFT dense-flow\n(forward)', 'Estimated displacements\n(backward)', 'RAFT dense-flow\n(backward)']  # 标签显示名称d
+    TAGS_TO_VISUALIZE = ['flow_f_gt', 'induced_flow_f', 'flow_b_gt', 'induced_flow_b']  # 需要可视化的图像标签
+    TAGS_TO_DISPLAY = ['Estimated displacements\n(forward)', 'RAFT dense-flow\n(forward)', 'Estimated displacements\n(backward)', 'RAFT dense-flow\n(backward)']  # 标签显示名称d
 
     # 指定要可视化的步数列表(作为列)
     STEPS_TO_VISUALIZE = [173_000, 272_000, 394_500, 455_000, 500_000]  # 示例步数
@@ -137,7 +137,7 @@ if __name__ == "__main__":
         tags_to_visualize=TAGS_TO_VISUALIZE,
         steps_to_visualize=STEPS_TO_VISUALIZE,
         TAGS_TO_DISPLAY=TAGS_TO_DISPLAY,
-        save_path='tensorboard_image_grid.svg' \
+        save_path='tensorboard_image_grid.png' \
         '',
         
     )
