@@ -1,0 +1,17 @@
+  - rgb_holdout
+  - mask
+  - disp
+  - rgb
+  - depth
+  - acc
+  - rgb_s
+  - depth_s
+  - acc_s
+  - rgb_d
+  - depth_d
+  - acc_d
+  - induced_flow_f
+  - induced_flow_b
+  - flow_f_gt
+  - flow_b_gt
+  - dynamicness
