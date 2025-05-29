@@ -125,7 +125,7 @@ if __name__ == "__main__":
     # TAGS_TO_DISPLAY = ['Ground Truth', 'Depth (NeRF)', 'Depth (NeRF + D)']  # 标签显示名称
 
     # flow
-    TAGS_TO_VISUALIZE = ['flow_f_gt', 'induced_flow_f', 'flow_b_gt', 'induced_flow_b']  # 需要可视化的图像标签
+    TAGS_TO_VISUALIZE = [ 'induced_flow_f', 'flow_f_gt', 'induced_flow_b', 'flow_b_gt', ]  # 需要可视化的图像标签
     TAGS_TO_DISPLAY = ['Estimated displacements\n(forward)', 'RAFT dense-flow\n(forward)', 'Estimated displacements\n(backward)', 'RAFT dense-flow\n(backward)']  # 标签显示名称d
 
     # 指定要可视化的步数列表(作为列)

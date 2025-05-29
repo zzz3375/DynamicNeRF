@@ -158,11 +158,12 @@ def plot_scalar_values(log_path, tags_to_visualize, tags_to_display, title, xlab
         scalar_events = ea.Scalars(tag)
         steps = [e.step for e in scalar_events]
         values = [e.value for e in scalar_events]
-        ax.plot(steps, values, label=display_name, alpha=1 - (1-0.5)*(i-1)/len(tags_to_visualize))
+        if len(tags_to_visualize)==1: ax.plot(steps, values, 'k', label=display_name, alpha=1 - (1-0.5)*(i-1)/len(tags_to_visualize))
+        else: ax.plot(steps, values, label=display_name, alpha=1 - (1-0.5)*(i-1)/len(tags_to_visualize))
 
-        step_min = max(step_min, min(steps))
-        step_max = min(step_max, max(steps))
-        ax.set_xlim(step_min, step_max)
+        # step_min = max(step_min, min(steps))
+        # step_max = min(step_max, max(steps))
+        # ax.set_xlim(step_min, step_max)
         i+=1
     if i>=2+1:  ax.legend(fontsize=12)
     else: ax.set_ylabel("Value", fontsize=14)
@@ -218,6 +219,7 @@ if __name__ == "__main__":
     # depth
     # TAGS_TO_VISUALIZE = ['rgb_holdout', 'depth_s', 'depth_d']
     # TAGS_TO_DISPLAY = ['Ground Truth', 'Depth (NeRF)', 'Depth (NeRF + D)']  # 标签显示名称
+    
 
     # flow
     # TAGS_TO_VISUALIZE = ['flow_f_gt', 'induced_flow_f', 'flow_b_gt', 'induced_flow_b']  # 需要可视化的图像标签
@@ -227,6 +229,8 @@ if __name__ == "__main__":
     # scalar: depth loss
     # TAGS_TO_VISUALIZE = ['depth_loss']
     # TAGS_TO_DISPLAY = ['Pseudo-depth loss']  # 标签显示名称
+    # title = "Pseudo-depth loss"
+
 
     # scalar: psnr_sd
     # TAGS_TO_VISUALIZE = ['psnr_s', 'psnr_d']
@@ -234,3 +238,25 @@ if __name__ == "__main__":
 
     # scalar: motion loss 2 steps
     # motion_loss_2_step()
+    # TAGS_TO_VISUALIZE = ['img_d_f_loss', 'img_d_f_f_loss'] + ['img_d_b_loss', 'img_d_b_b_loss']
+    # TAGS_TO_DISPLAY = ['Forward 1 step motion', 'Forward 2 step motion'] + ['Backward 1 step motion', 'Backward 2 step motion'] # 标签显示名称    
+
+    # scalar: psnr motion
+    # TAGS_TO_VISUALIZE = ['psnr_d_f', 'psnr_d_b']
+    # TAGS_TO_DISPLAY = ['forward motion (1 step)', 'backward motion (1 step)']  # 标签显示名称
+
+    # scalar: pseudo-motion loss
+    TAGS_TO_VISUALIZE = ['flow_f_loss', 'flow_b_loss']
+    TAGS_TO_DISPLAY = ['Forward $L_1$ loss', 'Backward $L_1$ los']  # 标签显示名称
+    title = "RAFT fitting-preference during 3D-motion-optimization"  # 图表标题
+
+    plt.figure(figsize=(15, 6))
+    ax = plot_scalar_values(LOG_PATH, 
+                       TAGS_TO_VISUALIZE, 
+                       TAGS_TO_DISPLAY, 
+                       title=title,
+                       xlabel="Step")
+    # plt.xlim(210_000, 490_000)
+    plt.tight_layout()
+    plt.savefig('scalar_plot.svg', dpi=300, bbox_inches='tight')
+    print("Scalar plot saved as scalar_plot")    
