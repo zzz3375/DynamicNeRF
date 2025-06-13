@@ -171,42 +171,113 @@ def plot_scalar_values(log_path, tags_to_visualize, tags_to_display, title, xlab
     plt.tight_layout()
     return ax
 
-def motion_loss_2_step(log_path, tags_to_visualize, tags_to_display, title):
-    TAGS_TO_VISUALIZE = ['img_d_f_loss', 'img_d_f_f_loss']
-    TAGS_TO_DISPLAY = ['Forward 1 step motion', 'Forward 2 step motion']  # 标签显示名称
+def plot_two_groups_of_scalars(
+    log_path,
+    tags_to_visualize_group1,
+    tags_to_display_group1,
+    title_group1,
+    tags_to_visualize_group2,
+    tags_to_display_group2,
+    title_group2,
+    save_path='scalar_plot.svg'
+):
+    """
+    输入两组 scalar 标签，分别在2行1列的子图中可视化
 
-    # 指定要可视化的步数列表(作为列)
-    STEPS_TO_VISUALIZE = [173_000, 272_000, 394_500, 455_000, 500_000]  # 示例步数
-
-    # 创建2行1列的子图，使用plt.subplot确保211/212布局
+    Args:
+        log_path: TensorBoard 日志文件路径
+        tags_to_visualize_group1: 第一组 scalar 标签列表
+        tags_to_display_group1: 第一组标签的展示名称
+        title_group1: 第一组子图标题
+        tags_to_visualize_group2: 第二组 scalar 标签列表
+        tags_to_display_group2: 第二组标签的展示名称
+        title_group2: 第二组子图标题
+        save_path: 保存路径
+    """
     plt.figure(figsize=(15, 10))
 
     plt.subplot(211)
-    ax0 = plot_scalar_values(
-        log_path=LOG_PATH,
-        tags_to_visualize=TAGS_TO_VISUALIZE,
-        tags_to_display=TAGS_TO_DISPLAY,
-        title="Loss of 3D motion estimation (color MSE)",  # 图表标题,
-        xlabel = None
+    plot_scalar_values(
+        log_path=log_path,
+        tags_to_visualize=tags_to_visualize_group1,
+        tags_to_display=tags_to_display_group1,
+        title=title_group1,
+        xlabel=None
     )
 
-    TAGS_TO_VISUALIZE = ['img_d_b_loss', 'img_d_b_b_loss']
-    TAGS_TO_DISPLAY = ['Backward 1 step motion', 'Backward 2 step motion']  # 标签显示名称
-
     plt.subplot(212)
-    ax1 = plot_scalar_values(
-        log_path=LOG_PATH,
-        tags_to_visualize=TAGS_TO_VISUALIZE,
-        tags_to_display=TAGS_TO_DISPLAY,
-        title=None,   # 图表标题
-        xlabel = "Step"
+    plot_scalar_values(
+        log_path=log_path,
+        tags_to_visualize=tags_to_visualize_group2,
+        tags_to_display=tags_to_display_group2,
+        title=title_group2,
+        xlabel="Step"
     )
 
     plt.tight_layout()
-    plt.savefig('scalar_plot.svg', dpi=300, bbox_inches='tight')
-    print("Scalar plot saved as scalar_plot")
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    print(f"Scalar plot saved as {save_path}")
     plt.show()
-    pass
+
+def plot_three_groups_of_scalars(
+    log_path,
+    tags_to_visualize_group1,
+    tags_to_display_group1,
+    title_group1,
+    tags_to_visualize_group2,
+    tags_to_display_group2,
+    title_group2,
+    tags_to_visualize_group3,
+    tags_to_display_group3,
+    title_group3,
+    save_path='scalar_plot.svg'
+):
+    """
+    输入两组 scalar 标签，分别在2行1列的子图中可视化
+
+    Args:
+        log_path: TensorBoard 日志文件路径
+        tags_to_visualize_group1: 第一组 scalar 标签列表
+        tags_to_display_group1: 第一组标签的展示名称
+        title_group1: 第一组子图标题
+        tags_to_visualize_group2: 第二组 scalar 标签列表
+        tags_to_display_group2: 第二组标签的展示名称
+        title_group2: 第二组子图标题
+        save_path: 保存路径
+    """
+    plt.figure(figsize=(15, 15))
+
+    plt.subplot(311)
+    plot_scalar_values(
+        log_path=log_path,
+        tags_to_visualize=tags_to_visualize_group1,
+        tags_to_display=tags_to_display_group1,
+        title=title_group1,
+        xlabel=None
+    )
+
+    plt.subplot(312)
+    plot_scalar_values(
+        log_path=log_path,
+        tags_to_visualize=tags_to_visualize_group2,
+        tags_to_display=tags_to_display_group2,
+        title=title_group2,
+        xlabel="Step"
+    )
+
+    plt.subplot(313)
+    plot_scalar_values(
+        log_path=log_path,
+        tags_to_visualize=tags_to_visualize_group3,
+        tags_to_display=tags_to_display_group3,
+        title=title_group3,
+        xlabel="Step"
+    )
+
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    print(f"Scalar plot saved as {save_path}")
+    plt.show()
 
 if __name__ == "__main__":
     # 指定TensorBoard日志路径
@@ -246,17 +317,47 @@ if __name__ == "__main__":
     # TAGS_TO_DISPLAY = ['forward motion (1 step)', 'backward motion (1 step)']  # 标签显示名称
 
     # scalar: pseudo-motion loss
-    TAGS_TO_VISUALIZE = ['flow_f_loss', 'flow_b_loss']
-    TAGS_TO_DISPLAY = ['Forward $L_1$ loss', 'Backward $L_1$ los']  # 标签显示名称
-    title = "RAFT fitting-preference during 3D-motion-optimization"  # 图表标题
+    # TAGS_TO_VISUALIZE = ['flow_f_loss', 'flow_b_loss']
+    # TAGS_TO_DISPLAY = ['Forward $L_1$ loss', 'Backward $L_1$ loss']  # 标签显示名称
+    # title = "RAFT influence during 3D-motion-optimization"  # 图表标题
 
-    plt.figure(figsize=(15, 6))
-    ax = plot_scalar_values(LOG_PATH, 
-                       TAGS_TO_VISUALIZE, 
-                       TAGS_TO_DISPLAY, 
-                       title=title,
-                       xlabel="Step")
-    # plt.xlim(210_000, 490_000)
-    plt.tight_layout()
-    plt.savefig('scalar_plot.svg', dpi=300, bbox_inches='tight')
-    print("Scalar plot saved as scalar_plot")    
+    # TAGS_TO_VISUALIZE = ['sf_smooth_loss', 'sp_smooth_loss']
+    # TAGS_TO_DISPLAY = ['Smooth loss (time-domain)', 'Smooth loss (spatial-domain)']  # 标签显示名称
+    # title = "RAFT influence during 3D-motion-optimization"  # 图表标题
+
+    # plt.figure(figsize=(15, 6))
+    # ax = plot_scalar_values(LOG_PATH, 
+    #                    TAGS_TO_VISUALIZE, 
+    #                    TAGS_TO_DISPLAY, 
+    #                    title=title,
+    #                    xlabel="Step")
+    # # plt.xlim(210_000, 490_000)
+    # plt.tight_layout()
+    # plt.savefig('scalar_plot.svg', dpi=300, bbox_inches='tight')
+    # print("Scalar plot saved as scalar_plot")    
+    # plot_two_groups_of_scalars(
+    #     log_path=LOG_PATH,
+    #     tags_to_visualize_group1=['img_d_f_loss','img_d_b_loss'] + [ 'img_d_f_f_loss', 'img_d_b_b_loss'],
+    #     tags_to_display_group1=['Forward 1 step motion', 'Backward 1 step motion' ] + ['Forward 2 step motion', 'Backward 2 step motion'],
+    #     title_group1="Loss of 3D motion estimation (color MSE)",
+    #     tags_to_visualize_group2=['psnr_d_f', 'psnr_d_b'],
+    #     tags_to_display_group2=['forward motion (1 step)', 'backward motion (1 step)'],
+    #     title_group2="Accuracy of 3D motion estimation (PSNR by motion)",
+    #     save_path='motion_and_psnr_plot.svg'
+    # )
+
+    plot_three_groups_of_scalars(
+        log_path=LOG_PATH,
+        tags_to_visualize_group1=['sp_smooth_loss'],
+        tags_to_display_group1=['Motion-smoothness loss (spatial-domain)'],
+        title_group1="Motion-smoothness loss (spatial-domain)",
+        tags_to_visualize_group2=['smooth_loss'],
+        tags_to_display_group2=['Motion-smoothness loss (time-domain)'],
+        title_group2='Motion-smoothness loss (time-domain)',
+        tags_to_visualize_group3=['consistency_loss'],
+        tags_to_display_group3=['Motion-consistency loss (time-domain)'],
+        title_group3='Motion-consistency loss (time-domain)',
+        save_path='3_scalar_plot.svg'
+    )
+
+    
