@@ -1,5 +1,5 @@
 ROOT_PATH=~/DynamicNeRF
-DATASET_NAME=DJI_20250516151729_0005_V-100f-fps30
+DATASET_NAME=inservice-wind-turbine-100f-fps30
 DATASET_PATH=$ROOT_PATH/data/$DATASET_NAME
 mkdir -p $DATASET_PATH
 
@@ -9,13 +9,13 @@ cd $ROOT_PATH/weights
 
 
 cd $ROOT_PATH/utils
-python generate_data.py --videopath ../DJI_20250516151729_0005_V.MP4 --outputname $DATASET_NAME 
+python generate_data.py --videopath ../inservice-wind-turbine0300-0400.mkv --outputname $DATASET_NAME 
 
 colmap feature_extractor \
 --database_path $DATASET_PATH/database.db \
 --image_path $DATASET_PATH/images_colmap \
 --ImageReader.mask_path $DATASET_PATH/background_mask 
-# --ImageReader.single_camera 1
+--ImageReader.single_camera 1
 
 colmap exhaustive_matcher \
 --database_path $DATASET_PATH/database.db
@@ -43,4 +43,4 @@ cd $ROOT_PATH/utils
 python generate_motion_mask.py --dataset_path $DATASET_PATH
 
 cd $ROOT_PATH/
-python run_nerf.py --config configs/config-WTB-Beijing-100f-fps30.txt
+python run_nerf.py --config configs/config-WTB-blender.txt

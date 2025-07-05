@@ -39,7 +39,7 @@ def multi_view_multi_time(args):
 
     idx = 0
     frame_idx = 0
-    idx_cut = 300
+    idx_cut = 0
     while True:
         ret, frame = cap.read()
         if frame_idx < idx_cut:
