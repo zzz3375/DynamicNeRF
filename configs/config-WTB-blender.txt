@@ -1,6 +1,6 @@
-expname = inservice-wind-turbine
+expname = top-inservice-wind-turbine
 basedir = ./logs
-datadir = ./data/inservice-wind-turbine-100f-fps30
+datadir = ./data/top-inservice-wind-turbine-100f-fps30
 
 dataset_type = llff
 
@@ -10,8 +10,8 @@ N_samples = 64
 netwidth = 256
 
 i_video = 100000
-i_testset = 100000
-N_iters = 500_001
+i_testset = 50_000
+N_iters = 300_001
 i_img = 500
 
 use_viewdirs = True
