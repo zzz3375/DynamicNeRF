@@ -162,7 +162,8 @@ def train():
         frame2dolly = args.frame2dolly
         images, invdepths, masks, poses, bds, \
         render_poses, render_focals, grids = load_llff_data(args, args.datadir,
-                                                            args.factor,
+                                                            # args.factor,
+                                                            None,
                                                             frame2dolly=frame2dolly,
                                                             recenter=True, bd_factor=.9,
                                                             spherify=args.spherify)

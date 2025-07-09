@@ -1,5 +1,5 @@
 ROOT_PATH=~/DynamicNeRF
-DATASET_NAME=top-inservice-wind-turbine-100f-fps30
+DATASET_NAME=inservice-wind-turbine
 DATASET_PATH=$ROOT_PATH/data/$DATASET_NAME
 mkdir -p $DATASET_PATH
 
@@ -9,22 +9,22 @@ cd $ROOT_PATH/weights
 
 
 cd $ROOT_PATH/utils
-python generate_data.py --videopath ../inservice-wind-turbine0300-0400-top.mkv --outputname $DATASET_NAME 
+python generate_data.py --videopath ../inservice.mp4 --outputname $DATASET_NAME 
 
 colmap feature_extractor \
 --database_path $DATASET_PATH/database.db \
 --image_path $DATASET_PATH/images_colmap \
---ImageReader.mask_path $DATASET_PATH/background_mask 
+--ImageReader.mask_path $DATASET_PATH/background_mask \
 --ImageReader.single_camera 1
 
-colmap exhaustive_matcher \
+colmap sequential_matcher \
 --database_path $DATASET_PATH/database.db
 
 mkdir -p $DATASET_PATH/sparse
 colmap mapper \
     --database_path $DATASET_PATH/database.db \
     --image_path $DATASET_PATH/images_colmap \
-    --output_path $DATASET_PATH/sparse 
+    --output_path $DATASET_PATH/sparse --Mapper.multiple_models 0
     # --Mapper.num_threads 16 \
     # --Mapper.init_min_tri_angle 4 \
     # --Mapper.multiple_models 0 \
@@ -43,4 +43,4 @@ cd $ROOT_PATH/utils
 python generate_motion_mask.py --dataset_path $DATASET_PATH
 
 # cd $ROOT_PATH/
-# python run_nerf.py --config configs/config-WTB-blender-top.txt
+# python run_nerf.py --config configs/config-WTB-inservice.txt

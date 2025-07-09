@@ -1,0 +1,35 @@
+expname = inservice-wind-turbine
+basedir = ./logs
+datadir = ./data/inservice-wind-turbine
+
+dataset_type = llff
+
+factor = 1
+N_rand = 1024
+N_samples = 64
+netwidth = 256
+
+i_video = 100000
+i_testset = 25_000
+N_iters = 500_001
+i_img = 500
+
+use_viewdirs = True
+use_viewdirsDyn = True
+raw_noise_std = 1e0
+no_ndc = False
+lindisp = False
+
+dynamic_loss_lambda = 1.0
+static_loss_lambda = 1.0
+full_loss_lambda = 3.0
+depth_loss_lambda = 0.004
+order_loss_lambda = 0.1
+flow_loss_lambda = 0.02
+slow_loss_lambda = 0.01
+smooth_loss_lambda = 0.1
+consistency_loss_lambda = 1.0
+mask_loss_lambda = 0.1
+sparse_loss_lambda = 0.001
+DyNeRF_blending = True
+pretrain = False

@@ -39,9 +39,10 @@ def multi_view_multi_time(args):
 
     idx = 0
     frame_idx = 0
-    idx_cut = 0
+    idx_cut = 9
     while True:
         ret, frame = cap.read()
+        frame = frame[100:,:,:]
         if frame_idx < idx_cut:
             frame_idx += 1
             continue
@@ -53,11 +54,11 @@ def multi_view_multi_time(args):
             img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             H, W, _ = img.shape
             # max_size = int(1920 / 2)
-            max_size = 1200
-            scale = min(max_size / max(H, W), 1.0)
-            if scale < 1.0:
-                img = cv2.resize(img, (int(W * scale), int(H * scale)), interpolation=cv2.INTER_AREA)
-                H, W, _ = img.shape
+            # max_size = 1600
+            # scale = 1.0
+            # if scale < 1.0:
+            #     img = cv2.resize(img, (int(W * scale), int(H * scale)), interpolation=cv2.INTER_AREA)
+            #     H, W, _ = img.shape
 
             print(idx)
             # Save images using cv2 (convert RGB to BGR)

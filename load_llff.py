@@ -59,7 +59,7 @@ def _minify(basedir, factors=[], resolutions=[]):
         print('Done')
 
 
-def _load_data(basedir, factor=None, width=None, height=None, load_imgs=True):
+def _load_data(basedir, factor=None, width=1200, height=612, load_imgs=True):
     print('factor ', factor)
     poses_arr = np.load(os.path.join(basedir, 'poses_bounds.npy'))
     poses = poses_arr[:, :-2].reshape([-1, 3, 5]).transpose([1,2,0])
@@ -75,13 +75,6 @@ def _load_data(basedir, factor=None, width=None, height=None, load_imgs=True):
         sfx = '_{}'.format(factor)
         _minify(basedir, factors=[factor])
         factor = factor
-    elif height is not None:
-        factor = sh[0] / float(height)
-        width = int(sh[1] / factor)
-        if width % 2 == 1:
-            width -= 1
-        _minify(basedir, resolutions=[[height, width]])
-        sfx = '_{}x{}'.format(width, height)
     elif width is not None:
         factor = sh[1] / float(width)
         height = int(sh[0] / factor)
@@ -89,6 +82,14 @@ def _load_data(basedir, factor=None, width=None, height=None, load_imgs=True):
             height -= 1
         _minify(basedir, resolutions=[[height, width]])
         sfx = '_{}x{}'.format(width, height)
+    elif height is not None:
+        factor = sh[0] / float(height)
+        width = int(sh[1] / factor)
+        if width % 2 == 1:
+            width -= 1
+        _minify(basedir, resolutions=[[height, width]])
+        sfx = '_{}x{}'.format(width, height)
+
     else:
         factor = 1
 
@@ -118,6 +119,7 @@ def _load_data(basedir, factor=None, width=None, height=None, load_imgs=True):
             return imageio.imread(f)
 
     imgs = [imread(f)[..., :3] / 255. for f in imgfiles]
+
     imgs = np.stack(imgs, -1)
 
     assert imgs.shape[0] == sh[0]
