@@ -11,7 +11,7 @@ netwidth = 256
 
 i_video = 100000
 i_testset = 100000
-N_iters = 250_001
+N_iters = 500_001
 i_img = 500
 
 use_viewdirs = True
