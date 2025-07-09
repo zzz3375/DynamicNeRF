@@ -1,5 +1,5 @@
 ROOT_PATH=~/DynamicNeRF
-DATASET_NAME=inservice-wind-turbine
+DATASET_NAME=plain-inservice
 DATASET_PATH=$ROOT_PATH/data/$DATASET_NAME
 mkdir -p $DATASET_PATH
 
@@ -9,7 +9,7 @@ cd $ROOT_PATH/weights
 
 
 cd $ROOT_PATH/utils
-python generate_data.py --videopath ../inservice.mp4 --outputname $DATASET_NAME 
+python generate_data.py --videopath ../plain-inservice.mp4 --outputname $DATASET_NAME 
 
 colmap feature_extractor \
 --database_path $DATASET_PATH/database.db \
@@ -44,3 +44,4 @@ python generate_motion_mask.py --dataset_path $DATASET_PATH
 
 # cd $ROOT_PATH/
 # python run_nerf.py --config configs/config-WTB-inservice.txt
+# python run_nerf.py --config configs/config-WTB-plain-inservice.txt
