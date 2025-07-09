@@ -421,8 +421,8 @@ def train():
         grid = grids[img_i]
 
         rays_o, rays_d = get_rays(H, W, focal, torch.Tensor(pose)) # (H, W, 3), (H, W, 3)
-        coords_d = torch.stack((torch.where(mask < 0.5)), -1)
-        coords_s = torch.stack((torch.where(mask >= 0.5)), -1)
+        coords_d = torch.stack((torch.where(torch.zeros_like(mask) < 0.5)), -1)
+        coords_s = torch.stack((torch.where(torch.ones_like(mask) >= 0.5)), -1)
         coords = torch.stack((torch.where(mask > -1)), -1)
 
         # Evenly sample dynamic region and static region
