@@ -426,10 +426,11 @@ def train():
         coords = torch.stack((torch.where(mask > -1)), -1)
 
         # Evenly sample dynamic region and static region
-        select_inds_d = np.random.choice(coords_d.shape[0], size=[min(len(coords_d), N_rand//2)], replace=False)
-        select_inds_s = np.random.choice(coords_s.shape[0], size=[N_rand//2], replace=False)
-        select_coords = torch.cat([coords_s[select_inds_s],
-                                   coords_d[select_inds_d]], 0)
+        # select_inds_d = np.random.choice(coords_d.shape[0], size=[min(len(coords_d), N_rand//2)], replace=False)
+        # select_inds_s = np.random.choice(coords_s.shape[0], size=[N_rand//2], replace=False)
+        # select_coords = torch.cat([coords_s[select_inds_s],
+        #                            coords_d[select_inds_d]], 0)
+        select_coords = np.random.choice(coords_d.shape[0], size=[min(len(coords_d), N_rand)], replace=False)
 
         def select_batch(value, select_coords=select_coords):
             return value[select_coords[:, 0], select_coords[:, 1]]
