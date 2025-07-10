@@ -390,9 +390,10 @@ def raw2outputs(raw_s,
     # Computed weighted color of each sample along each ray.
     rgb_map_d = torch.sum(weights_d[..., None] * rgb_d, -2)
     rgb_map_s = torch.sum(weights_s[..., None] * rgb_s, -2)
-    rgb_map_full = torch.sum(
-        (T_full * alpha_d * blending)[..., None] * rgb_d + \
-        (T_full * alpha_s * (1. - blending))[..., None] * rgb_s, -2)
+    # rgb_map_full = torch.sum(
+    #     (T_full * alpha_d * blending)[..., None] * rgb_d + \
+    #     (T_full * alpha_s * (1. - blending))[..., None] * rgb_s, -2)
+    rgb_map_full = torch.sum( (T_full * alpha_d )[..., None] * rgb_d, -2)
 
     # Estimated depth map is expected distance.
     depth_map_d = torch.sum(weights_d * z_vals, -1)
