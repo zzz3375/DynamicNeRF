@@ -148,7 +148,7 @@ def compare_image_grids(
     elif cols == 1:
         axes = axes.reshape(-1, 1)
 
-    fontsize = 14
+    fontsize = 12
     # LOG_PATH1
     for i, tag in enumerate(tags_to_visualize):
         tag_name = tags_to_display[i] if tags_to_display else tag
@@ -162,7 +162,7 @@ def compare_image_grids(
                 ax.set_xticks([])
                 ax.set_yticks([])
                 if j == 0:
-                    ax.set_ylabel(f"{tag_name}\n(mountain)", fontsize=fontsize)
+                    ax.set_ylabel(f"{tag_name}", fontsize=fontsize)
                 if i == 0:
                     ax.set_title(f"{str(step)[:-5]}00K", fontsize=fontsize)
             else:
@@ -194,9 +194,9 @@ def compare_image_grids(
                 ax.set_xticks([])
                 ax.set_yticks([])
                 if j == 0:
-                    ax.set_ylabel(f"{tag_name}\n(plain)", fontsize=fontsize)
+                    ax.set_ylabel(f"{tag_name}", fontsize=fontsize)
                 if i == 0:
-                    ax.set_title(f"{str(step)[:-3]}K", fontsize=fontsize)
+                    ax.set_title(f"{str(step)[:-5]}00K", fontsize=fontsize)
             else:
                 ax.text(0.5, 0.5, f"No Image\nTag: {tag}\nStep: {step}", ha='center', va='center', transform=ax.transAxes)
                 ax.set_facecolor('lightgray')
@@ -222,16 +222,16 @@ if __name__ == "__main__":
     # LOG_PATH = 'logs/summaries/DJI_20250516151729_0005_V-100f-fps30_DyNeRF_pretrain_test/events.out.tfevents.1748093593.ZhizhangOFFICE.2938.0'
     
     # render
-    # TAGS_TO_VISUALIZE = [ 'rgb_s', 'rgb_d', 'rgb_holdout',]
-    # TAGS_TO_DISPLAY = [ 'NeRF', 'NeRF + D', 'Ground Truth',]  # 标签显示名称
+    # TAGS_TO_VISUALIZE = [ 'rgb_holdout', 'rgb_s', 'rgb_d', ]
+    # TAGS_TO_DISPLAY = [ 'Ground Truth', '3D color\n(NeRF)', '3D color\n(NeRF + D)', ]  # 标签显示名称
 
-    # depth
-    TAGS_TO_VISUALIZE = [ 'rgb_holdout', 'depth_s', 'depth_d',]
-    TAGS_TO_DISPLAY = [ 'Ground Truth', 'NeRF', 'NeRF + D', ]  # 标签显示名称
+    # # depth
+    # TAGS_TO_VISUALIZE = [ 'rgb_holdout', 'depth_s', 'depth_d',]
+    # TAGS_TO_DISPLAY = [ 'Ground Truth', 'Depth (NeRF)', 'Depth (NeRF + D)', ]  # 标签显示名称
 
     # flow
-    # TAGS_TO_VISUALIZE = [ 'induced_flow_f', 'flow_f_gt', 'induced_flow_b', 'flow_b_gt', ]  # 需要可视化的图像标签
-    # TAGS_TO_DISPLAY = ['Estimated displacements\n(forward)', 'RAFT dense-flow\n(forward)', 'Estimated displacements\n(backward)', 'RAFT dense-flow\n(backward)']  # 标签显示名称d
+    TAGS_TO_VISUALIZE = [ 'induced_flow_f', 'flow_f_gt', 'induced_flow_b', 'flow_b_gt', ]  # 需要可视化的图像标签
+    TAGS_TO_DISPLAY = ['Estimated displacements\n(forward)', 'RAFT dense-flow\n(forward)', 'Estimated displacements\n(backward)', 'RAFT dense-flow\n(backward)']  # 标签显示名称d
 
     # 指定要可视化的步数列表(作为列)
     # STEPS_TO_VISUALIZE = [173_000, 272_000, 394_500, 455_000, 500_000]  # 示例步数
