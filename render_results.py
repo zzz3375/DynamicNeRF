@@ -78,9 +78,11 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
     if make_video:
         import cv2
         import os
+        from pathlib import Path
 
         # 设置参数
         image_folder = output_dir # 图片文件夹路径
+        original_image_folder = Path(args.datadir) / "images"
         video_name = 'output_video.mp4'  # 输出视频文件名
         fps = 30  # 帧率（每秒多少张图片）
 
@@ -98,7 +100,14 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
         # 逐帧写入视频
         for image in images:
             img_path = os.path.join(image_folder, image)
-            frame = cv2.imread(img_path)
+            frame = cv2.imread(img_path, cv2.IMREAD_COLOR)
+
+            original_image = cv2.imread(os.path.join(original_image_folder, image))
+            original_image = cv2.resize(original_image, (width, height))
+            
+            if "depth" in args.render_mode: 
+                frame[:, :width//2] = original_image[:, :width//2]  
+
             video.write(frame)
 
         # 释放资源
