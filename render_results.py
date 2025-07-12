@@ -30,6 +30,7 @@ def load_latest_checkpoint(args, render_kwargs_train):
 
 
 def render_all_training_views(args, output_dir, render_mode='color', make_video=False):
+    import os
     os.makedirs(output_dir, exist_ok=True)
 
     # Load LLFF data
@@ -79,7 +80,7 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
         import os
 
         # 设置参数
-        image_folder = "output_dir" # 图片文件夹路径
+        image_folder = output_dir # 图片文件夹路径
         video_name = 'output_video.mp4'  # 输出视频文件名
         fps = 30  # 帧率（每秒多少张图片）
 
@@ -114,4 +115,4 @@ if __name__ == '__main__':
 
     torch.set_default_tensor_type('torch.cuda.FloatTensor' if torch.cuda.is_available() else 'torch.FloatTensor')
     render_all_training_views(args, args.output_dir, args.render_mode, args.make_video)
-    #  python render_results.py --output_dir render_results --render_mode depth --make_video --config configs/config-WTB-inservice.txt --chunk 16384
+    #  python render_results.py --output_dir render_results/plain --render_mode depth --make_video --config configs/config-WTB-inservice.txt --chunk 16384
