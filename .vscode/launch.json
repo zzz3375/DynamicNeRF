@@ -39,6 +39,22 @@
             "env": {
                 "PYTHONPATH": "${workspaceFolder}"
             }
+        },
+        {
+            "name": "Python: Render Results",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/render_results.py",
+            "args": [
+                "--output_dir", "render_results/plain",
+                "--render_mode", "depth",
+                "--make_video",
+                "--config", "configs/config-WTB-inservice.txt",
+                "--chunk", "16384"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false
         }
     ]
 }

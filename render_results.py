@@ -105,8 +105,8 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
             original_image = cv2.imread(os.path.join(original_image_folder, image))
             original_image = cv2.resize(original_image, (width, height))
             
-            if "depth" in args.render_mode: 
-                frame[:, :width//2] = original_image[:, :width//2]  
+            # if "depth" in args.render_mode: 
+            #     frame[:, :width//2 - 100] = original_image[:, :width//2 - 100]  
 
             video.write(frame)
 
