@@ -158,7 +158,7 @@ def compare_image_grids(
             image_event = next((e for e in image_events if e.step == step), None)
             if image_event is not None:
                 img = Image.open(io.BytesIO(image_event.encoded_image_string))
-                ax.imshow(np.array(img), cmap='viridis' if "depth" in tag else None)
+                ax.imshow(np.array(img))
                 ax.set_xticks([])
                 ax.set_yticks([])
                 if j == 0:
@@ -190,7 +190,7 @@ def compare_image_grids(
             image_event = next((e for e in image_events if e.step == step), None)
             if image_event is not None:
                 img = Image.open(io.BytesIO(image_event.encoded_image_string))
-                ax.imshow(np.array(img), cmap='jet' if "depth" in tag else None)
+                ax.imshow(np.array(img))
                 ax.set_xticks([])
                 ax.set_yticks([])
                 if j == 0:
@@ -230,8 +230,8 @@ if __name__ == "__main__":
     # TAGS_TO_DISPLAY = [ 'Ground Truth', 'Depth (NeRF)', 'Depth (NeRF + D)', ]  # 标签显示名称
 
     # flow
-    TAGS_TO_VISUALIZE = [ 'induced_flow_f', 'flow_f_gt', 'induced_flow_b', 'flow_b_gt', ]  # 需要可视化的图像标签
-    TAGS_TO_DISPLAY = ['Estimated displacements\n(forward)', 'RAFT dense-flow\n(forward)', 'Estimated displacements\n(backward)', 'RAFT dense-flow\n(backward)']  # 标签显示名称d
+    TAGS_TO_VISUALIZE = [ 'rgb_holdout', 'induced_flow_f', 'flow_f_gt',]  # 需要可视化的图像标签
+    TAGS_TO_DISPLAY = [ 'Original image' , 'Estimated displacements', 'RAFT dense-flow',]  # 标签显示名称d
 
     # 指定要可视化的步数列表(作为列)
     # STEPS_TO_VISUALIZE = [173_000, 272_000, 394_500, 455_000, 500_000]  # 示例步数

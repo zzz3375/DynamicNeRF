@@ -112,7 +112,7 @@ def visualize_image_grid(log_path, tags_to_visualize, steps_to_visualize, save_p
     
     # plt.show()
 
-def plot_scalar_values(log_path, tags_to_visualize, tags_to_display, title, xlabel="Step"):
+def plot_scalar_values(log_path, tags_to_visualize, tags_to_display, title, xlabel="Step", alpha = 1):
     """
     可视化多个 scalar 标量在 TensorBoard 中的演化曲线
 
@@ -158,15 +158,15 @@ def plot_scalar_values(log_path, tags_to_visualize, tags_to_display, title, xlab
         scalar_events = ea.Scalars(tag)
         steps = [e.step for e in scalar_events]
         values = [e.value for e in scalar_events]
-        if len(tags_to_visualize)==1: ax.plot(steps, values, 'k', label=display_name, alpha=1 - (1-0.5)*(i-1)/len(tags_to_visualize))
-        else: ax.plot(steps, values, label=display_name, alpha=1 - (1-0.5)*(i-1)/len(tags_to_visualize))
+        # if len(tags_to_visualize)==1: ax.plot(steps, values, 'k', label=display_name, alpha=1 - (1-0.5)*(i-1)/len(tags_to_visualize))
+        ax.plot(steps, values, label=display_name, alpha=alpha)
 
         # step_min = max(step_min, min(steps))
         # step_max = min(step_max, max(steps))
         # ax.set_xlim(step_min, step_max)
         i+=1
-    if i>=2+1:  ax.legend(fontsize=12)
-    else: ax.set_ylabel("Value", fontsize=14)
+    ax.legend(fontsize=12)
+    # else: ax.set_ylabel("Value", fontsize=14)
     
     plt.tight_layout()
     return ax
@@ -255,6 +255,7 @@ def plot_three_groups_of_scalars(
         title=title_group1,
         xlabel=None
     )
+    plt.yscale('log')
 
     plt.subplot(312)
     plot_scalar_values(
@@ -264,6 +265,7 @@ def plot_three_groups_of_scalars(
         title=title_group2,
         xlabel="Step"
     )
+    plt.yscale('log')
 
     plt.subplot(313)
     plot_scalar_values(
@@ -273,11 +275,52 @@ def plot_three_groups_of_scalars(
         title=title_group3,
         xlabel="Step"
     )
+    plt.yscale('log')
 
     plt.tight_layout()
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     print(f"Scalar plot saved as {save_path}")
     plt.show()
+
+def compare_different_scenes(
+    log_path1, 
+    log_path2, 
+    tags_to_visualize,
+    tags_to_display1,
+    tags_to_display2,
+    save_path='compare_scalars',
+    titles = None,
+):
+    plt.figure(figsize=(len(tags_to_visualize)*5, 5))
+    
+    for i,tag in enumerate(tags_to_visualize):
+        plt.subplot(1,len(tags_to_visualize),1+i)
+      
+
+        plot_scalar_values(
+            log_path=log_path2,
+            tags_to_visualize=[tags_to_visualize[i]],
+            tags_to_display=[tags_to_display2[i]],
+            title=titles[i],
+            xlabel="Step"
+        )
+
+        plot_scalar_values(
+            log_path=log_path1,
+            tags_to_visualize=[tags_to_visualize[i]],
+            tags_to_display=[tags_to_display1[i]],
+            title=None,
+            xlabel="Step"
+        )
+        if "loss" in tags_to_visualize[i]: plt.yscale('log')
+        plt.xlim(131_000, None)
+    
+    plt.tight_layout()
+    plt.savefig(save_path+'.svg', dpi=300, bbox_inches='tight')
+    print(f"Scalar plot saved as {save_path}")
+    plt.show()
+
+    pass
 
 if __name__ == "__main__":
     # 指定TensorBoard日志路径
@@ -360,4 +403,16 @@ if __name__ == "__main__":
         save_path='3_scalar_plot.svg'
     )
 
-    
+    # TAGS_TO_VISUALIZE = [ 'psnr_d', "smooth_loss", "consistency_loss"]  # 需要可视化的图像标签
+    # TAGS_TO_DISPLAY1 = [ 'mountain' , "mountain", "mountain"]  
+    # TAGS_TO_DISPLAY2 = [ 'plain' , "plain", "plain"]
+    # titles = ["PSNR", "Motion smoothness loss", "Motion consistency loss"]
+
+    # compare_different_scenes(
+    #         log_path1=r"logs/summaries/inservice-wind-turbine/events.out.tfevents.1752078591.ZhizhangOFFICE.123140.0",
+    #         log_path2=r"logs/summaries/plain-inservice/events.out.tfevents.1752147392.ZhizhangOFFICE.49301.0",
+    #         tags_to_visualize= TAGS_TO_VISUALIZE,
+    #         tags_to_display1 = TAGS_TO_DISPLAY1,
+    #         tags_to_display2 = TAGS_TO_DISPLAY2,
+    #         titles = titles
+    # )
