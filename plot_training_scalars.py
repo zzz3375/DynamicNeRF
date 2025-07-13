@@ -255,7 +255,7 @@ def plot_three_groups_of_scalars(
         title=title_group1,
         xlabel=None
     )
-    plt.yscale('log')
+    # plt.yscale('log')
 
     plt.subplot(312)
     plot_scalar_values(
@@ -265,7 +265,7 @@ def plot_three_groups_of_scalars(
         title=title_group2,
         xlabel="Step"
     )
-    plt.yscale('log')
+    # plt.yscale('log')
 
     plt.subplot(313)
     plot_scalar_values(
@@ -275,7 +275,7 @@ def plot_three_groups_of_scalars(
         title=title_group3,
         xlabel="Step"
     )
-    plt.yscale('log')
+    # plt.yscale('log')
 
     plt.tight_layout()
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
@@ -313,7 +313,7 @@ def compare_different_scenes(
             xlabel="Step"
         )
         if "loss" in tags_to_visualize[i]: plt.yscale('log')
-        plt.xlim(131_000, None)
+        plt.xlim(131_000, 500_000)
     
     plt.tight_layout()
     plt.savefig(save_path+'.svg', dpi=300, bbox_inches='tight')
@@ -324,7 +324,7 @@ def compare_different_scenes(
 
 if __name__ == "__main__":
     # 指定TensorBoard日志路径
-    LOG_PATH = 'logs/summaries/DJI_20250516151729_0005_V-100f-fps30_DyNeRF_pretrain_test/events.out.tfevents.1748093593.ZhizhangOFFICE.2938.0'
+    # LOG_PATH = 'logs/summaries/DJI_20250516151729_0005_V-100f-fps30_DyNeRF_pretrain_test/events.out.tfevents.1748093593.ZhizhangOFFICE.2938.0'
     
     # render
     # TAGS_TO_VISUALIZE = ['rgb_holdout', 'rgb_s', 'rgb_d',]
@@ -389,30 +389,30 @@ if __name__ == "__main__":
     #     save_path='motion_and_psnr_plot.svg'
     # )
 
-    plot_three_groups_of_scalars(
-        log_path=LOG_PATH,
-        tags_to_visualize_group1=['sp_smooth_loss'],
-        tags_to_display_group1=['Motion-smoothness loss (spatial-domain)'],
-        title_group1="Motion-smoothness loss (spatial-domain)",
-        tags_to_visualize_group2=['smooth_loss'],
-        tags_to_display_group2=['Motion-smoothness loss (time-domain)'],
-        title_group2='Motion-smoothness loss (time-domain)',
-        tags_to_visualize_group3=['consistency_loss'],
-        tags_to_display_group3=['Motion-consistency loss (time-domain)'],
-        title_group3='Motion-consistency loss (time-domain)',
-        save_path='3_scalar_plot.svg'
-    )
-
-    # TAGS_TO_VISUALIZE = [ 'psnr_d', "smooth_loss", "consistency_loss"]  # 需要可视化的图像标签
-    # TAGS_TO_DISPLAY1 = [ 'mountain' , "mountain", "mountain"]  
-    # TAGS_TO_DISPLAY2 = [ 'plain' , "plain", "plain"]
-    # titles = ["PSNR", "Motion smoothness loss", "Motion consistency loss"]
-
-    # compare_different_scenes(
-    #         log_path1=r"logs/summaries/inservice-wind-turbine/events.out.tfevents.1752078591.ZhizhangOFFICE.123140.0",
-    #         log_path2=r"logs/summaries/plain-inservice/events.out.tfevents.1752147392.ZhizhangOFFICE.49301.0",
-    #         tags_to_visualize= TAGS_TO_VISUALIZE,
-    #         tags_to_display1 = TAGS_TO_DISPLAY1,
-    #         tags_to_display2 = TAGS_TO_DISPLAY2,
-    #         titles = titles
+    # plot_three_groups_of_scalars(
+    #     log_path=LOG_PATH,
+    #     tags_to_visualize_group1=['sp_smooth_loss'],
+    #     tags_to_display_group1=['Motion-smoothness loss (spatial-domain)'],
+    #     title_group1="Motion-smoothness loss (spatial-domain)",
+    #     tags_to_visualize_group2=['smooth_loss'],
+    #     tags_to_display_group2=['Motion-smoothness loss (time-domain)'],
+    #     title_group2='Motion-smoothness loss (time-domain)',
+    #     tags_to_visualize_group3=['consistency_loss'],
+    #     tags_to_display_group3=['Motion-consistency loss (time-domain)'],
+    #     title_group3='Motion-consistency loss (time-domain)',
+    #     save_path='3_scalar_plot.svg'
     # )
+
+    TAGS_TO_VISUALIZE = [ 'psnr_d', "smooth_loss", "consistency_loss"]  # 需要可视化的图像标签
+    TAGS_TO_DISPLAY1 = [ 'mountain' , "mountain", "mountain"]  
+    TAGS_TO_DISPLAY2 = [ 'plain' , "plain", "plain"]
+    titles = ["PSNR", "Motion smoothness loss", "Motion consistency loss"]
+
+    compare_different_scenes(
+            log_path1=r"logs/summaries/inservice-wind-turbine/events.out.tfevents.1752078591.ZhizhangOFFICE.123140.0",
+            log_path2=r"logs/summaries/plain-inservice/events.out.tfevents.1752147392.ZhizhangOFFICE.49301.0",
+            tags_to_visualize= TAGS_TO_VISUALIZE,
+            tags_to_display1 = TAGS_TO_DISPLAY1,
+            tags_to_display2 = TAGS_TO_DISPLAY2,
+            titles = titles
+    )
