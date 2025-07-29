@@ -31,7 +31,7 @@ def multi_view_multi_time(args):
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     # step = max(1, int(np.ceil(frame_count / 385)))
     step = 1
-    total_frames = 100
+    total_frames = 10000
 
     create_dir(os.path.join(args.data_dir, args.outputname, 'images'))
     create_dir(os.path.join(args.data_dir, args.outputname, 'images_colmap'))
@@ -39,10 +39,10 @@ def multi_view_multi_time(args):
 
     idx = 0
     frame_idx = 0
-    idx_cut = 9
+    idx_cut = 0
     while True:
         ret, frame = cap.read()
-        frame = frame[100:,:,:]
+        # frame = frame[100:,:,:]
         if frame_idx < idx_cut:
             frame_idx += 1
             continue
@@ -52,6 +52,7 @@ def multi_view_multi_time(args):
             break
         if frame_idx % step == 0:
             img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            # img = frame
             H, W, _ = img.shape
             # max_size = int(1920 / 2)
             # max_size = 1600
@@ -68,12 +69,12 @@ def multi_view_multi_time(args):
             # Get coarse background mask
             img_tensor = torchvision.transforms.functional.to_tensor(img).to(device)
             background_mask = torch.ones(H, W, dtype=torch.float32, device=device)
-            objPredictions = Maskrcnn([img_tensor])[0]
+            # objPredictions = Maskrcnn([img_tensor])[0]
 
-            for intMask in range(len(objPredictions['masks'])):
-                if objPredictions['scores'][intMask].item() > threshold:
-                    if objPredictions['labels'][intMask].item() == 1:  # person
-                        background_mask[objPredictions['masks'][intMask, 0, :, :] > threshold] = 0.0
+            # for intMask in range(len(objPredictions['masks'])):
+            #     if objPredictions['scores'][intMask].item() > threshold:
+            #         if objPredictions['labels'][intMask].item() == 1:  # person
+            #             background_mask[objPredictions['masks'][intMask, 0, :, :] > threshold] = 0.0
 
             background_mask_np = ((background_mask.cpu().numpy() > 0.1) * 255).astype(np.uint8)
             cv2.imwrite(os.path.join(args.data_dir, args.outputname, 'background_mask', str(idx).zfill(3) + '.jpg.png'), background_mask_np)
