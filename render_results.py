@@ -68,8 +68,10 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
             image = to8b(ret['rgb_map_full'].cpu().numpy())
         elif render_mode == 'depth':
             image = to8b(normalize_depth(ret['depth_map_full']).cpu().numpy())
+        elif render_mode == 'flow_f':
+            image = to8b(normalize_depth(ret['flows_f']).cpu().numpy())
         else:
-            raise ValueError("render_mode must be 'color' or 'depth'")
+            raise ValueError("render_mode not supported")
 
         fname = os.path.join(output_dir, f"{i:03d}.png")
         imageio.imwrite(fname, image)
@@ -118,7 +120,7 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
 if __name__ == '__main__':
     parser = config_parser()
     parser.add_argument('--output_dir', type=str, default='render_results', required=True, help="Folder to save images and video")
-    parser.add_argument('--render_mode', choices=['color', 'depth'], default='depth', help="Which map to render")
+    parser.add_argument('--render_mode', default='depth', help="Which map to render")
     parser.add_argument('--make_video', action='store_true', help="Combine images into a video")
     args = parser.parse_args()
 
