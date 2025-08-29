@@ -103,7 +103,7 @@ def main():
         pose = torch.Tensor(poses[i])
         t_val = i / float(num_img) * 2.0 - 1.0
         with torch.no_grad():
-            ret = render(t_val, False, H, W, focal, chunk=args.chunk, c2w=pose, **render_kwargs_test)
+            ret = render(t_val, False, H, W, focal, chunk=args.chunk, c2w=first, **render_kwargs_test)
 
         # depth_map = ret["depth_map_d"].cpu().numpy()
         # rays_o, rays_d = get_rays(H, W, focal, pose)

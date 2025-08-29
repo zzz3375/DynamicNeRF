@@ -1,5 +1,5 @@
 ROOT_PATH=~/DynamicNeRF
-DATASET_NAME=DJI_20250516151729_0005_V_full
+DATASET_NAME=blender
 DATASET_PATH=$ROOT_PATH/data/$DATASET_NAME
 mkdir -p $DATASET_PATH
 
@@ -9,7 +9,7 @@ cd $ROOT_PATH/weights
 
 
 cd $ROOT_PATH/utils
-python generate_data.py --videopath ../DJI_20250516151729_0005_V.MP4 --outputname $DATASET_NAME 
+python generate_data.py --videopath ../0000-0099.mkv --outputname $DATASET_NAME 
 
 colmap feature_extractor \
 --database_path $DATASET_PATH/database.db \
@@ -17,7 +17,7 @@ colmap feature_extractor \
 --ImageReader.mask_path $DATASET_PATH/background_mask \
 --ImageReader.single_camera 1
 
-colmap exhaustive_matcher \
+colmap sequential_matcher \
 --database_path $DATASET_PATH/database.db
 
 mkdir -p $DATASET_PATH/sparse
