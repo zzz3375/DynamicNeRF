@@ -65,11 +65,12 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
             )
 
         if render_mode == 'color':
-            image = to8b(ret['rgb_map_full'].cpu().numpy())
+            image = to8b(ret['rgb_map_d'].cpu().numpy())
         elif render_mode == 'depth':
-            image = to8b(normalize_depth(ret['depth_map_full']).cpu().numpy())
-        elif render_mode == 'flow_f':
-            image = to8b(normalize_depth(ret['flows_f']).cpu().numpy())
+            image = to8b(normalize_depth(ret['depth_map_d']).cpu().numpy())
+        elif render_mode == 'flow':
+            image = to8b(normalize_depth(ret['induced_flow_f']).cpu().numpy())
+        
         else:
             raise ValueError("render_mode not supported")
 
