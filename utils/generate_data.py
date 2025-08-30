@@ -18,68 +18,40 @@ def create_dir(dir):
 
 
 def multi_view_multi_time(args):
-    """
-    Generating multi view multi time data using cv2 for image I/O
-    """
+    """Extract frames 300 to 500 from video and save with masks"""
+    
+    # Create output directories
+    output_paths = ['images', 'images_colmap', 'background_mask']
+    for path in output_paths:
+        create_dir(os.path.join(args.data_dir, args.outputname, path))
 
-    Maskrcnn = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True).to(device).eval()
-    threshold = 0.5
-
-    videoname, ext = os.path.splitext(os.path.basename(args.videopath))
-
+    # Open video and set start position
     cap = cv2.VideoCapture(args.videopath)
-    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    # step = max(1, int(np.ceil(frame_count / 385)))
-    step = 1
-    total_frames = 10000
-
-    create_dir(os.path.join(args.data_dir, args.outputname, 'images'))
-    create_dir(os.path.join(args.data_dir, args.outputname, 'images_colmap'))
-    create_dir(os.path.join(args.data_dir, args.outputname, 'background_mask'))
-
-    idx = 0
-    frame_idx = 0
-    idx_cut = 0
-    while True:
+    cap.set(cv2.CAP_PROP_POS_FRAMES, 300)
+    
+    # Process 200 frames
+    for idx in range(200):
         ret, frame = cap.read()
-        # frame = frame[100:,:,:]
-        if frame_idx < idx_cut:
-            frame_idx += 1
-            continue
         if not ret:
             break
-        if idx >= total_frames:
-            break
-        if frame_idx % step == 0:
-            img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            # img = frame
-            H, W, _ = img.shape
-            # max_size = int(1920 / 2)
-            # max_size = 1600
-            # scale = 1.0
-            # if scale < 1.0:
-            #     img = cv2.resize(img, (int(W * scale), int(H * scale)), interpolation=cv2.INTER_AREA)
-            #     H, W, _ = img.shape
-
-            print(idx)
-            # Save images using cv2 (convert RGB to BGR)
-            cv2.imwrite(os.path.join(args.data_dir, args.outputname, 'images', str(idx).zfill(3) + '.png'), cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
-            cv2.imwrite(os.path.join(args.data_dir, args.outputname, 'images_colmap', str(idx).zfill(3) + '.jpg'), cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
-
-            # Get coarse background mask
-            img_tensor = torchvision.transforms.functional.to_tensor(img).to(device)
-            background_mask = torch.ones(H, W, dtype=torch.float32, device=device)
-            # objPredictions = Maskrcnn([img_tensor])[0]
-
-            # for intMask in range(len(objPredictions['masks'])):
-            #     if objPredictions['scores'][intMask].item() > threshold:
-            #         if objPredictions['labels'][intMask].item() == 1:  # person
-            #             background_mask[objPredictions['masks'][intMask, 0, :, :] > threshold] = 0.0
-
-            background_mask_np = ((background_mask.cpu().numpy() > 0.1) * 255).astype(np.uint8)
-            cv2.imwrite(os.path.join(args.data_dir, args.outputname, 'background_mask', str(idx).zfill(3) + '.jpg.png'), background_mask_np)
-            idx += 1
-        frame_idx += 1
+            
+        # Convert and process frame
+        img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        H, W, _ = img.shape
+        
+        # Save images
+        cv2.imwrite(os.path.join(args.data_dir, args.outputname, 'images', f"{idx:03d}.png"), 
+                   cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+        cv2.imwrite(os.path.join(args.data_dir, args.outputname, 'images_colmap', f"{idx:03d}.jpg"), 
+                   cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+        
+        # Save blank background mask
+        background_mask = torch.ones(H, W, dtype=torch.float32, device=device)
+        background_mask_np = ((background_mask.cpu().numpy() > 0.1) * 255).astype(np.uint8)
+        cv2.imwrite(os.path.join(args.data_dir, args.outputname, 'background_mask', f"{idx:03d}.jpg.png"), 
+                   background_mask_np)
+        
+        print(f"Processed frame {idx}")
 
     cap.release()
 
