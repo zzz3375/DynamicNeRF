@@ -27,10 +27,10 @@ def multi_view_multi_time(args):
 
     # Open video and set start position
     cap = cv2.VideoCapture(args.videopath)
-    cap.set(cv2.CAP_PROP_POS_FRAMES, 300)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, 230)
     
     # Process 200 frames
-    for idx in range(200):
+    for idx in range(100):
         ret, frame = cap.read()
         if not ret:
             break
