@@ -15,9 +15,11 @@
             "program": "${workspaceFolder}/utils/generate_data.py",
             "args": [
                 "--videopath",
-                "DJI_20250516151729_0005_V.MP4"
+                "DJI_20250516151729_0005_V.MP4",
+                "--outputname",
+                "DJI_20250516151729_0005_V"
             ],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/utils",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}"
             },
