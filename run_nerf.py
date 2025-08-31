@@ -500,7 +500,8 @@ def train():
             induced_flow_f = induce_flow(H, W, focal, pose_f, weight, pts_f, batch_grid[..., :2])
             flow_f_loss = img2mae(induced_flow_f, batch_grid[:, 2:4], batch_grid[:, 4:5])
             loss_dict['flow_f_loss'] = flow_f_loss
-            loss += args.flow_loss_lambda * Temp * loss_dict['flow_f_loss']
+            # loss += args.flow_loss_lambda * Temp * loss_dict['flow_f_loss']
+            loss += args.flow_loss_lambda * loss_dict['flow_f_loss']
 
         # Compuate EPE between induced flow and true flow (backward flow).
         # The first frame does not have backward flow.
