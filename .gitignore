@@ -14,3 +14,4 @@ inservice-wind-turbine0300-0400-top.mkv
 utils/midas/blocks.py
 utils/cuda-repo-wsl-ubuntu-12-8-local_12.8.0-1_amd64.deb
 configs/config-WTB-blender.txt
+scene_flow_analysis/*
