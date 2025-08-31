@@ -51,7 +51,9 @@ def main():
     with torch.no_grad():
         ret = render(t0, False, H, W, focal, chunk=args.chunk, c2w=first_pose, **render_kwargs_test)
 
+    
     first_img = (ret['rgb_map_d'].cpu().numpy() * 255).astype(np.uint8)
+    current_img = first_img
     cv2.imshow("Select Pixels", first_img[:, :, ::-1])  # BGR
     selected_pixels = []
 
@@ -89,18 +91,25 @@ def main():
 
     prev_pts = pt_3d.copy()
     
-    # Save first frame with points
-    first_img_with_points = first_img.copy()
-    for (x, y) in selected_pixels:
-        cv2.circle(first_img_with_points, (x, y), 3, (0, 0, 255), -1)  # Red dot
-    cv2.imwrite(os.path.join(images_dir, f"frame_000.png"), first_img_with_points[:, :, ::-1])
+    # # Save first frame with points
+    # first_img_with_points = first_img.copy()
+    # for (x, y) in selected_pixels:
+    #     cv2.circle(first_img_with_points, (x, y), 3, (0, 0, 255), -1)  # Red dot
+    # cv2.imwrite(os.path.join(images_dir, f"frame_000.png"), first_img_with_points[:, :, ::-1])
     
-    for i in tqdm(range(1, num_img), desc="Tracing scene flow"):
+    for i in tqdm(range(0, num_img - 1), desc="Tracing scene flow"):
+
+        
         pose = torch.Tensor(poses[i])
         grid = grids[i]
         t_val = i / float(num_img) * 2.0 - 1.0
         with torch.no_grad():
             ret = render(t_val, False, H, W, focal, chunk=args.chunk, c2w=pose, **render_kwargs_test)
+
+        current_img = (ret['rgb_map_d'].cpu().numpy() * 255).astype(np.uint8)
+        for (x, y) in selected_pixels:
+            cv2.circle(current_img, (x, y), 3, (0, 0, 255), -1)  # Red dot
+        cv2.imwrite(os.path.join(images_dir, f"frame_{i:03d}.png"), current_img[:, :, ::-1])
 
         depth_map = ret["depth_map_d"].cpu().numpy()
         rays_o, rays_d = get_rays(H, W, focal, pose)
@@ -135,10 +144,8 @@ def main():
         prev_pts = cur_pts
         
         # Draw and save current frame with tracked points
-        current_img = (ret['rgb_map_d'].cpu().numpy() * 255).astype(np.uint8)
-        for (x, y) in selected_pixels:
-            cv2.circle(current_img, (x, y), 3, (0, 0, 255), -1)  # Red dot
-        cv2.imwrite(os.path.join(images_dir, f"frame_{i:03d}.png"), current_img[:, :, ::-1])
+
+
 
     # ---- Step 4: plot displacement ----
     time_axis = np.arange(num_img) / 30.0  # seconds
