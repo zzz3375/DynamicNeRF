@@ -19,7 +19,7 @@ def load_latest_checkpoint(args, render_kwargs_train):
     if not ckpts:
         raise FileNotFoundError(f"No checkpoint found in {ckpt_dir}")
     latest_ckpt = ckpts[-1]
-    # latest_ckpt = os.path.join(ckpt_dir, "500000.tar")
+    # latest_ckpt = os.path.join(ckpt_dir, "100000.tar")
     print(f"Loading checkpoint: {latest_ckpt}")
     ckpt = torch.load(latest_ckpt)
 

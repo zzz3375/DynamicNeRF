@@ -37,7 +37,7 @@ cd $ROOT_PATH/utils
 python generate_depth.py --dataset_path $DATASET_PATH --model $ROOT_PATH/weights/model-f6b98070.pt
 
 cd $ROOT_PATH/utils
-python generate_flow.py --dataset_path $DATASET_PATH --model $ROOT_PATH/weights/raft-things.pth
+python generate_flow.py --dataset_path $DATASET_PATH --model $ROOT_PATH/weights/raft-things.pth  --mixed_precision
 
 cd $ROOT_PATH/utils
 python generate_motion_mask.py --dataset_path $DATASET_PATH

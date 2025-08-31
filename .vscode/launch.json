@@ -33,7 +33,7 @@
             "program": "${workspaceFolder}/run_nerf.py",
             "args": [
                 "--config",
-                "configs/config-WTB-plain-inservice.txt"
+                "configs/config-WTB-Beijing-no_combine.txt"
             ],
             "console": "integratedTerminal",
             "justMyCode": false,
@@ -52,7 +52,7 @@
                 "--render_mode", "depth",
                 "--make_video",
                 "--config", "configs/config-WTB-Beijing-no_combine.txt",
-                "--chunk", "16384"
+                "--chunk", "16384","--camera_still"
             ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",

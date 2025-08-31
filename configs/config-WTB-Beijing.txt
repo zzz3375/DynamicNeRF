@@ -1,4 +1,4 @@
-expname = DJI_20250516151729_0005_V_DyNeRF_pretrain_test
+expname = DJI_20250516151729_0005_V
 basedir = ./logs
 datadir = ./data/DJI_20250516151729_0005_V
 

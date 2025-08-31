@@ -512,7 +512,8 @@ def train():
             induced_flow_b = induce_flow(H, W, focal, pose_b, weight, pts_b, batch_grid[..., :2])
             flow_b_loss = img2mae(induced_flow_b, batch_grid[:, 5:7], batch_grid[:, 7:8])
             loss_dict['flow_b_loss'] = flow_b_loss
-            loss += args.flow_loss_lambda * Temp * loss_dict['flow_b_loss']
+            # loss += args.flow_loss_lambda * Temp * loss_dict['flow_b_loss']
+            loss += args.flow_loss_lambda * loss_dict['flow_b_loss']
 
         # Slow scene flow. The forward and backward sceneflow should be small.
         slow_loss = L1(ret['sceneflow_b']) + L1(ret['sceneflow_f'])
