@@ -56,7 +56,7 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
     frames = []
 
     for i in tqdm(range(num_img), desc="Rendering training views"):
-        pose = torch.Tensor(poses[i]) if not args.camera_still else torch.Tensor(poses[num_img//2])
+        pose = torch.Tensor(poses[i]) 
         time_val = i / float(num_img) * 2. - 1.0
 
         with torch.no_grad():
@@ -124,7 +124,6 @@ if __name__ == '__main__':
     parser.add_argument('--output_dir', type=str, default='render_results', required=True, help="Folder to save images and video")
     parser.add_argument('--render_mode', default='depth', help="Which map to render")
     parser.add_argument('--make_video', action='store_true', help="Combine images into a video")
-    parser.add_argument('--camera_still', action='store_true', help="UAV suspension")
     args = parser.parse_args()
 
     torch.set_default_tensor_type('torch.cuda.FloatTensor' if torch.cuda.is_available() else 'torch.FloatTensor')

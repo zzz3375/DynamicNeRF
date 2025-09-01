@@ -52,7 +52,7 @@
                 "--render_mode", "depth",
                 "--make_video",
                 "--config", "configs/config-WTB-Beijing-no_combine.txt",
-                "--chunk", "16384","--camera_still"
+                "--chunk", "16384"
             ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
