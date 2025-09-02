@@ -33,7 +33,7 @@
             "program": "${workspaceFolder}/run_nerf.py",
             "args": [
                 "--config",
-                "configs/config-WTB-Beijing-no_combine.txt"
+                "configs/config-WTB-inservice.txt"
             ],
             "console": "integratedTerminal",
             "justMyCode": false,

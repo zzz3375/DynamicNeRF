@@ -2,7 +2,7 @@ import cv2
 import os
 
 # 设置参数
-image_folder = "scene_flow_analysis/DJI_20250516151729_0005_V-100f-fps30/images" # 图片文件夹路径
+image_folder = "render_results/WTB-Beijing" # 图片文件夹路径
 video_name = 'output_video.mp4'  # 输出视频文件名
 fps = 30  # 帧率（每秒多少张图片）
 
