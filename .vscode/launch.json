@@ -73,6 +73,20 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "justMyCode": false
-        }
+        },
+        {
+            "name": "Python: Render PLY",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/render_ply.py",
+            "args": [
+                "--output_dir", "render_ply",
+                "--config", "configs/config-WTB-Beijing-no_combine.txt",
+                "--chunk", "16384"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false
+        },        
     ]
 }
