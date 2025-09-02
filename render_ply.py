@@ -187,11 +187,11 @@ def render_and_save_ply(args, output_dir):
         combined_pcd += pcd
 
         # Also save depth and RGB images for reference
-        depth_image_path = os.path.join(output_dir, f"depth_{i:03d}.png")
-        rgb_image_path = os.path.join(output_dir, f"rgb_{i:03d}.png")
+        # depth_image_path = os.path.join(output_dir, f"depth_{i:03d}.png")
+        # rgb_image_path = os.path.join(output_dir, f"rgb_{i:03d}.png")
         
-        imageio.imwrite(depth_image_path, to8b(normalize_depth(ret['depth_map_d']).cpu().numpy()))
-        imageio.imwrite(rgb_image_path, rgb_map)
+        # imageio.imwrite(depth_image_path, to8b(normalize_depth(ret['depth_map_d']).cpu().numpy()))
+        # imageio.imwrite(rgb_image_path, rgb_map)
 
     # Save combined point cloud
     combined_ply_path = os.path.join(output_dir, "combined_pointcloud.ply")
