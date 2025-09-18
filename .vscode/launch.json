@@ -49,8 +49,6 @@
             "program": "${workspaceFolder}/render_results.py",
             "args": [
                 "--output_dir", "render_results/WTB-Beijing",
-                "--render_mode", "depth",
-                "--make_video",
                 "--config", "configs/config-WTB-Beijing-no_combine.txt",
                 "--chunk", "16384"
             ],
