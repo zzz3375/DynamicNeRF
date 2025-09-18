@@ -11,7 +11,7 @@ from run_nerf import config_parser, create_nerf
 
 from render_utils import *
 from run_nerf_helpers import *
-from pathlib import Path
+
 
 def load_latest_checkpoint(args, render_kwargs_train):
     ckpt_dir = os.path.join(args.basedir, args.expname)
@@ -30,9 +30,10 @@ def load_latest_checkpoint(args, render_kwargs_train):
         render_kwargs_train['network_fn_s'].load_state_dict(ckpt['network_fn_s_state_dict'])
 
 
-def render_all_training_views(args, output_dir, render_mode='color', make_video=False):
+def render_all_training_views(args, output_dir, make_video=False):
     import os
     os.makedirs(output_dir, exist_ok=True)
+    from pathlib import Path
     expname = args.expname
     dists = ['rgb_map_d', 'depth_map_d', 'rgb_map_s']
     # Load LLFF data
@@ -68,9 +69,9 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
 
         for dist in dists:
             if "depth" in dist: image = to8b(normalize_depth(ret[dist]).cpu().numpy())
-            else: image = to8b(ret[dist]).cpu().numpy()
+            else: image = to8b(ret[dist].cpu().numpy())
             fname: Path = Path(output_dir) / expname / dist / f"{i:03d}.png"
-            fname.mkdir(parents=1, exist_ok=1)
+            fname.parent.mkdir(parents=1, exist_ok=1)
             imageio.imwrite(str(fname), image)
             # frames.append(image)
 
@@ -122,5 +123,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     torch.set_default_tensor_type('torch.cuda.FloatTensor' if torch.cuda.is_available() else 'torch.FloatTensor')
-    render_all_training_views(args, args.output_dir, args.render_mode, args.make_video)
+    render_all_training_views(args, args.output_dir, args.make_video)
     #  python render_results.py --output_dir render_results/plain --make_video --config configs/config-WTB-inservice.txt --chunk 16384

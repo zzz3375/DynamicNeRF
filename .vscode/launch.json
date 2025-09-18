@@ -48,7 +48,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/render_results.py",
             "args": [
-                "--output_dir", "render_results/WTB-Beijing",
+                "--output_dir", "render_results",
                 "--config", "configs/config-WTB-Beijing-no_combine.txt",
                 "--chunk", "16384"
             ],
