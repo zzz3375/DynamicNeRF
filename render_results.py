@@ -11,7 +11,7 @@ from run_nerf import config_parser, create_nerf
 
 from render_utils import *
 from run_nerf_helpers import *
-
+from pathlib import Path
 
 def load_latest_checkpoint(args, render_kwargs_train):
     ckpt_dir = os.path.join(args.basedir, args.expname)
@@ -33,7 +33,8 @@ def load_latest_checkpoint(args, render_kwargs_train):
 def render_all_training_views(args, output_dir, render_mode='color', make_video=False):
     import os
     os.makedirs(output_dir, exist_ok=True)
-
+    expname = args.expname
+    dists = ['rgb_map_d', 'depth_map_d', 'rgb_map_s']
     # Load LLFF data
     images, invdepths, masks, poses, bds, render_poses, render_focals, grids = load_llff_data(
         args, args.datadir, None, frame2dolly=args.frame2dolly,
@@ -65,19 +66,13 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
                 c2w=pose, **render_kwargs_test
             )
 
-        if render_mode == 'color':
-            image = to8b(ret['rgb_map_d'].cpu().numpy())
-        elif render_mode == 'depth':
-            image = to8b(normalize_depth(ret['depth_map_d']).cpu().numpy())
-        elif render_mode == 'flow':
-            image = to8b(normalize_depth(ret['induced_flow_f']).cpu().numpy())
-        
-        else:
-            raise ValueError("render_mode not supported")
-
-        fname = os.path.join(output_dir, f"{i:03d}.png")
-        imageio.imwrite(fname, image)
-        frames.append(image)
+        for dist in dists:
+            if "depth" in dist: image = to8b(normalize_depth(ret[dist]).cpu().numpy())
+            else: image = to8b(ret[dist]).cpu().numpy()
+            fname: Path = Path(output_dir) / expname / dist / f"{i:03d}.png"
+            fname.mkdir(parents=1, exist_ok=1)
+            imageio.imwrite(str(fname), image)
+            # frames.append(image)
 
     if make_video:
         import cv2
@@ -122,10 +117,10 @@ def render_all_training_views(args, output_dir, render_mode='color', make_video=
 if __name__ == '__main__':
     parser = config_parser()
     parser.add_argument('--output_dir', type=str, default='render_results', required=True, help="Folder to save images and video")
-    parser.add_argument('--render_mode', default='depth', help="Which map to render")
+    # parser.add_argument('--render_mode', default='depth', help="Which map to render")
     parser.add_argument('--make_video', action='store_true', help="Combine images into a video")
     args = parser.parse_args()
 
     torch.set_default_tensor_type('torch.cuda.FloatTensor' if torch.cuda.is_available() else 'torch.FloatTensor')
     render_all_training_views(args, args.output_dir, args.render_mode, args.make_video)
-    #  python render_results.py --output_dir render_results/plain --render_mode depth --make_video --config configs/config-WTB-inservice.txt --chunk 16384
+    #  python render_results.py --output_dir render_results/plain --make_video --config configs/config-WTB-inservice.txt --chunk 16384
