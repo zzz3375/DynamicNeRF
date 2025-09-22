@@ -71,11 +71,11 @@ def _load_data(basedir, factor=None, width=1200, height=612, load_imgs=True):
 
     sfx = ''
 
-    if factor is not None:
-        sfx = '_{}'.format(factor)
-        _minify(basedir, factors=[factor])
-        factor = factor
-    elif width is not None:
+    # if factor is not None:
+    #     sfx = '_{}'.format(factor)
+    #     _minify(basedir, factors=[factor])
+    #     factor = factor
+    if width is not None:
         factor = sh[1] / float(width)
         height = int(sh[0] / factor)
         if height % 2 == 1:
