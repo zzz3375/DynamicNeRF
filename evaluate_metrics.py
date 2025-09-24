@@ -11,8 +11,8 @@ import os
 import cv2
 import numpy as np
 import pandas as pd
-from skimage.metrics import structural_similarity as ssim
-from skimage.metrics import peak_signal_noise_ratio as psnr
+# from skimage.metrics import structural_similarity as ssim
+# from skimage.metrics import peak_signal_noise_ratio as psnr
 import lpips
 import torch
 from PIL import Image
@@ -47,25 +47,120 @@ def load_mask(path, target_shape=None):
     mask = mask.astype(np.float32) / 255.0
     return mask
 
+def psnr(img_1, img_2, mask=None, data_range=255):
+    """
+    Calculate PSNR between two images, optionally using a mask.
+    
+    Args:
+        img_1: First image (numpy array)
+        img_2: Second image (numpy array)
+        mask: Binary mask (2D array) where 1 indicates valid pixels
+        data_range: The dynamic range of the images (default 255 for uint8)
+    
+    Returns:
+        PSNR value in dB
+    """
+    from math import log10
+    img_1 = img_1.astype(np.float64)
+    img_2 = img_2.astype(np.float64)
+    
+    if mask is not None:
+        # Ensure mask has the same spatial dimensions
+        if mask.ndim == 2 and img_1.ndim == 3:
+            mask = mask[:, :, np.newaxis]
+        
+        # Apply mask
+        masked_img1 = img_1 * mask
+        masked_img2 = img_2 * mask
+        
+        # Calculate MSE only on masked regions
+        if mask.sum() == 0:
+            return float('inf')  # No valid pixels to compare
+        
+        mse = np.sum((masked_img1 - masked_img2) ** 2) / mask.sum()
+    else:
+        # Calculate MSE on entire image
+        mse = np.mean((img_1 - img_2) ** 2)
+    
+    if mse == 0:
+        return float('inf')  # Perfect match
+    
+    psnr_val = 20 * log10(data_range) - 10 * log10(mse)
+    return psnr_val
+
+def ssim(img_1, img_2, mask=None, data_range=255, channel_axis=2):
+    """
+    Calculate SSIM between two images, optionally using a mask.
+    
+    Args:
+        img_1: First image (numpy array)
+        img_2: Second image (numpy array)
+        mask: Binary mask (2D array) where 1 indicates valid pixels
+        data_range: The dynamic range of the images
+        channel_axis: Axis containing color channels
+    
+    Returns:
+        SSIM value
+    """
+    img_1 = img_1.astype(np.float64)
+    img_2 = img_2.astype(np.float64)
+    
+    # Constants for stability
+    C1 = (0.01 * data_range) ** 2
+    C2 = (0.03 * data_range) ** 2
+    
+    if mask is not None:
+        # Ensure mask has the same spatial dimensions
+        if mask.ndim == 2 and img_1.ndim == 3:
+            mask_3d = mask[:, :, np.newaxis]
+        else:
+            mask_3d = mask
+        
+        # Apply mask
+        masked_img1 = img_1 * mask_3d
+        masked_img2 = img_2 * mask_3d
+        
+        # Calculate statistics only on masked regions
+        if mask.sum() == 0:
+            return 1.0  # No valid pixels, return perfect score
+        
+        # Mean values
+        mu1 = np.sum(masked_img1, axis=(0, 1)) / mask.sum()
+        mu2 = np.sum(masked_img2, axis=(0, 1)) / mask.sum()
+        
+        # Variance and covariance
+        var1 = np.sum(mask_3d * (img_1 - mu1) ** 2, axis=(0, 1)) / mask.sum()
+        var2 = np.sum(mask_3d * (img_2 - mu2) ** 2, axis=(0, 1)) / mask.sum()
+        covar = np.sum(mask_3d * (img_1 - mu1) * (img_2 - mu2), axis=(0, 1)) / mask.sum()
+    else:
+        # Calculate statistics on entire image
+        mu1 = np.mean(img_1, axis=(0, 1))
+        mu2 = np.mean(img_2, axis=(0, 1))
+        
+        var1 = np.var(img_1, axis=(0, 1))
+        var2 = np.var(img_2, axis=(0, 1))
+        covar = np.mean((img_1 - mu1) * (img_2 - mu2), axis=(0, 1))
+    
+    # Calculate SSIM for each channel
+    ssim_channels = ((2 * mu1 * mu2 + C1) * (2 * covar + C2)) / \
+                   ((mu1**2 + mu2**2 + C1) * (var1 + var2 + C2))
+    
+    # Return mean SSIM across channels
+    return np.mean(ssim_channels)
+
 def calculate_psnr_ssim(img1, img2, mask=None):
     """Calculate PSNR and SSIM with optional masking"""
     if mask is not None:
         # Apply mask
-        masked_img1 = img1 * mask[:, :, np.newaxis]
-        masked_img2 = img2 * mask[:, :, np.newaxis]
+        masked_img1 = img1 
+        masked_img2 = img2 
         
         # Calculate metrics only on masked regions
-        psnr_val = psnr(masked_img1, masked_img2, data_range=255)
-        
-        # For SSIM, we need to handle masked regions carefully
-        ssim_val = ssim(masked_img1, masked_img2, win_size=11, 
-                       data_range=255, multichannel=True, 
-                       gaussian_weights=True, full=False, channel_axis = 2)
+        psnr_val = psnr(masked_img1, masked_img2,mask, data_range=255)
+        ssim_val = ssim(masked_img1, masked_img2,mask,  data_range=255, channel_axis=2)
     else:
         psnr_val = psnr(img1, img2, data_range=255)
-        ssim_val = ssim(img1, img2, win_size=11, 
-                       data_range=255, multichannel=True, 
-                       gaussian_weights=True, full=False, channel_axis = 2)
+        ssim_val = ssim(img1, img2, data_range=255, channel_axis=2)
     
     return psnr_val, ssim_val
 
@@ -160,8 +255,8 @@ def evaluate_directory(result_dir, gt_dir, mask_dir):
             mask = load_mask(mask_path, target_shape=gt_img.shape[:2])
             
             if mask.sum() == 0: 
-                print(f"Skipping {mask_filename}: empty mask")
-                continue
+                print(f"{mask_filename} is full zero: reset to full one")
+                mask = np.ones_like(mask)
             
             # Convert to float for calculations
             gt_img = gt_img.astype(np.float32)

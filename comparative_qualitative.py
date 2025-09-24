@@ -27,8 +27,8 @@ data = {
         "depth": "/home/zzz2004/DynamicNeRF/render_results/DJI_20250516151729_0005_V-no_combine-original/depth_map_full"
     },
     "Ours": {
-        "rgb": "/home/zzz2004/DynamicNeRF/render_results/DJI_20250516151729_0005_V-no_combine-fullflow/rgb_map_d",
-        "depth": "/home/zzz2004/DynamicNeRF/render_results/DJI_20250516151729_0005_V-no_combine-fullflow/depth_map_d"
+        "rgb": "/home/zzz2004/DynamicNeRF/render_results/DJI_20250516151729_0005_V-no_combine/rgb_map_d",
+        "depth": "/home/zzz2004/DynamicNeRF/render_results/DJI_20250516151729_0005_V-no_combine/depth_map_d"
     },
     "GT": {
         "rgb": "/home/zzz2004/DynamicNeRF/data/DJI_20250516151729_0005_V-100f-fps30/images"

@@ -93,13 +93,14 @@
             "program": "${workspaceFolder}/evaluate_metrics.py",
             "args": [
                 "--result_dir",
-                "render_results/DJI_20250516151729_0005_V-no_combine/rgb_map_d",
+                "render_results/DJI_20250516151729_0005_V-no_combine/rgb_map_s",
                 "--gt_dir",
                 "data/DJI_20250516151729_0005_V-100f-fps30/images",
+                // "/mnt/c/Users/13694/gaussian-splatting/output/wind-blade-vibration-capture3-fps30-100/train/ours_30000/gt",
                 "--mask_dir",
                 "data/DJI_20250516151729_0005_V-100f-fps30/motion_masks",
                 "--output",
-                "results_proposed_fullflow.xlsx"
+                "results.xlsx"
             ],
             "console": "integratedTerminal",
             "justMyCode": true,
